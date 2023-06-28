@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { render } from 'react-dom';
 
 
 const TodoList = () => {
@@ -16,6 +17,7 @@ const TodoList = () => {
             setTodos(newTodos);
                 console.log(newTodos, "deleteTodo")
             updateApi(newTodos);
+           
         };
 
   
@@ -29,31 +31,44 @@ const TodoList = () => {
         
     }
 
+    const deleteALL = () => {
+        fetch(APIURL,
+            {method: "DELETE",
+            headers: {"Content-Type": "application/json",},
+            form:{PARAMS: "none",}
+            
+        })
+    
+    }
+
     console.log(todos)
     
+    
     const submitTodoHandler = (incomingList) => {
-      //  e.preventDefault();
+        //  e.preventDefault();
         //const newTodo = [...todos, { label: inputValue, done: false }];
         const newTodos = [...incomingList, { label: inputValue, done: false}]
         console.log(newTodos, "inputTodo");
         updateApi(newTodos)
-           // setInputValue("");
+           setInputValue("");
             };
     
-        const updateApi = (newTodos) => {
-            fetch(APIURL, {method: "PUT",
-            body: JSON.stringify(newTodos),
-            headers: {
-            "Content-Type": "application/json",
-            }})
+        const updateApi = (newTodos) =>
+        {
+            console.log(newTodos, "updateApi");
+            fetch(APIURL, 
+            {method: "PUT",
+                body: JSON.stringify(newTodos),
+                headers: {"Content-Type": "application/json",}
+            })
             .then((response) => {
             response.status === 200 ? setTodos(newTodos) : ""
             });
         };
-
-        useEffect(() => {getTasks();}, []);
+        //used to save the todos
+        useEffect(() => {getTasks()}, []);
     
-        console.log(todos)
+        console.log(todos, "todos")
         
     return (
         <div className="container">
@@ -72,7 +87,7 @@ const TodoList = () => {
                 </li>
 
 
-                {todos.map((item, i) =>  {
+                {todos.length > 0 ? todos.map((item, i) =>  {
                 console.log(item, "item") 
                 return (
                 <div key= {i}>
@@ -88,10 +103,13 @@ const TodoList = () => {
                     </div>)
                     
                     
-})}
+}):""}
         
             </ul>
-            <div> {todos.length} task </div>
+            <div> {todos.length > 0 ? todos.length: 0} task </div>
+            <div >
+                <button type="button" className='deleteButton' onClick={deleteALL}>Delete All</button>
+            </div>
         </div>
   )
 

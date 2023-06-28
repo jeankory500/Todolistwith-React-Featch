@@ -44,3 +44,7 @@ i {
 li:hover .delete-button {
     opacity: 1;
 }
+
+.deleteButton{
+    float: right;
+}
